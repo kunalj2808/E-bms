@@ -189,7 +189,12 @@
     <div class="items items1">{{$consumer_details->area}}</div>
     <div class="items items1">BILL DETAILS</div>
     <div class="items items1">AMOUNT</div>
-    <div class="items items1"style="grid-row:1/26; grid-column:4/5;"></div>
+    <div class="items items1" style="grid-row: 1/26; grid-column: 4/5; display: flex; justify-content: center; align-items: center; height: 98%;">
+        <div id="imagePreview" style="display: {{ isset($general_setting->qr_image) ? 'block' : 'none' }}; width: 100%; height: 100%; text-align: center;">
+            <img src="{{ asset('images/admin/' . $general_setting->qr_image) }}" alt="Preview Image" style="width: 100%; height: 100%; object-fit: contain;"/>
+        </div>
+    </div>
+    
     <div class="items items1">ENERGY CHG GRID</div>
     <div class="items items1">{{$bill->current_reading - $previous_bill->current_reading}}</div>
     <div class="items items1">{{$result['total_amount']}}</div>
@@ -200,7 +205,7 @@
     <div class="items items1"></div>
     <div class="items items1">{{($bill->current_reading - $previous_bill->current_reading) / 15 * 27}}</div>
     <div class="items items1">ELECTRICITY DUTY</div>
-    <div class="items items1">100  {{($bill->current_reading - $previous_bill->current_reading)-100}}</div>
+    <div class="items items1"><span style="margin-left: 35px;">{{$general_setting->electricity_upto}}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <span style="margin-left: 100px;">{{($bill->current_reading - $previous_bill->current_reading)-$general_setting->electricity_upto}}</span></div>
     <div class="items items1">{{$calculation->electricity_duty}}</div>
     <div class="items items1"></div>
     <div class="items items1">TOTAL ENERGY BILL AMOUNT</div>
@@ -258,6 +263,11 @@
    </div>
 </div>
 <!-- Code injected by live-server -->
-
+<script>
+    // Automatically open the print dialog when the page is loaded
+    window.onload = function() {
+        window.print();
+    };
+</script>
 </body>
 </html>

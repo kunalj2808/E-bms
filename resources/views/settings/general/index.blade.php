@@ -21,7 +21,7 @@
                 <div class="card-inner">
                     <div class="preview-block">
                         <span class="preview-title-lg overline-title">General Settings Form Preview</span>
-                        <form action="{{ route('settings.store') }}" method="POST">
+                        <form action="{{ route('settings.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT') <!-- Ensure this is present -->
                             <b>TARIFF GRID</b>
@@ -141,6 +141,18 @@
                                                 value="{{ old('maintain_cost', $general->maintain_cost ?? '') }}" placeholder="1.25"  step="any" required>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="default-05"> PAYMENT QR CODE </label> <span
+                                            class="text-danger">*</span>
+                                        <div class="form-control-wrap">
+                                            <input type="file" class="form-control" name="payment_qr">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="imagePreview" style="display: {{ isset($general->qr_image) ? 'block' : 'none' }}">
+                                    <img src="{{ asset('images/admin/' . $general->qr_image) }}" alt="Preview Image" style="max-width: 200px; max-height: 200px;"/>
                                 </div>
 
                                 <div class="d-flex justify-content-end mb-4">

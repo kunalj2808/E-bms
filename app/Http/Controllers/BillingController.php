@@ -29,7 +29,6 @@ class BillingController extends Controller
     {
 
         $bill = Bill::with('payment', 'consumer')->where('id', $id)->first(); // Use first() to get a single instance
-        // dd($bill);
 
         $consumer_id = $bill->consumer->id;
         $bill_date = $bill->bill_date;
@@ -99,7 +98,6 @@ class BillingController extends Controller
 
         $grand_total = $total_reading_amount + $energy_chg_charger + $fixed_charge + $electricity_duty + $previous_amount + $fixed_maintain_charge;
         $reporting_month = \Carbon\Carbon::parse($bill_date)->format('Y-m');
-        // dd($reporting_month);
         // Prepare bill dates
         $bill_date = \Carbon\Carbon::parse($bill_date)->format('Y-m-d'); // Full date (e.g., '2024-09-30')
         $bill_due_date = \Carbon\Carbon::parse($bill_date)->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
@@ -181,7 +179,6 @@ class BillingController extends Controller
         ];
 
         // Output the results
-        // dd($partial_readings);
 
         $partial_reading = (object) [
             'upto_50' => $general_setting->upto_50,
@@ -266,25 +263,35 @@ class BillingController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate([
+            'user_id' => 'required',
+            'bill_date' => 'required|date', // Ensure it's a valid date
+            'current_reading' => 'required|numeric',
+            'remarks' => 'nullable|string',
+            'tariff_dg' => 'required|numeric',
+        ]);
+
         $consumer_id = $request->user_id;
         $bill_date = $request->bill_date;
         $total_reading = $request->current_reading;
         $remarks = $request->remarks;
         $tariff_dg = $request->tariff_dg;
 
-
+        // print_r($bill_date);
+        $dateObj = new \DateTime($bill_date);
         // Get the current month and year
-        $currentMonth = \Carbon\Carbon::now()->month;
-        $currentYear = \Carbon\Carbon::now()->year;
+    // Get the month and year
+        $month = $dateObj->format('m'); // 'm' gives month as a two-digit number
+        $year = $dateObj->format('Y');  // 'Y' gives the full year
 
         // Check if a bill exists for this consumer created this month and year
         $bill_exist = Bill::where('consumer_id', $consumer_id)
-            ->whereMonth('bill_date', $currentMonth)
-            ->whereYear('bill_date', $currentYear)
+            ->whereMonth('bill_date', $month)
+            ->whereYear('bill_date', $year)
             ->exists();  // Use exists() to check if a record exists
 
         if ($bill_exist) {
-            // dd("k");
             // If a bill for this month already exists
             return redirect()->route('billings.index')->with('error', 'A bill for this month has already been created for this consumer.');
         }
@@ -297,6 +304,9 @@ class BillingController extends Controller
             ->orderBy('bill_date', 'desc')  // Get the latest bill before the given bill_date
             ->first();
 
+            if($previous_bill && $previous_bill->current_reading >$total_reading ){
+            return redirect()->route('billings.index')->with('error', 'Present Reading can not be Smaller Than Previous Reading ');
+            }
         // If no previous bill exists, provide static data
         if (!$previous_bill) {
             $previous_bill = (object) [
@@ -312,9 +322,7 @@ class BillingController extends Controller
                 'tariff_dg' => 0,
             ];
         }
-        //  dd($previous_bill); 
 
-        // print_r($previous_bill);
 
         $general_setting = GeneralSetting::first();
 
@@ -347,7 +355,7 @@ class BillingController extends Controller
 
         if ($previous_bill) {
             // Check if the related payment exists
-            if ($previous_bill->payment) {
+            if (property_exists($previous_bill, 'payment') && $previous_bill->payment) {
                 // If payment exists, calculate the previous amount
                 $previous_amount = $previous_bill->current_bill_amount - $previous_bill->payment->received_amount;
             } else {
@@ -362,13 +370,12 @@ class BillingController extends Controller
         $fixed_maintain_charge = $consumer_details->area * $general_setting->maintain_cost;
 
         $grand_total = $total_reading_amount + $energy_chg_charger + $fixed_charge + $electricity_duty + $previous_amount + $fixed_maintain_charge;
-        // dd($grand_total);
 
 
         $reporting_month = \Carbon\Carbon::parse($request->bill_date)->format('Y-m');
         // Prepare bill dates
-        $bill_date = \Carbon\Carbon::parse($request->input('previous_month'))->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-        $bill_due_date = \Carbon\Carbon::parse($request->input('previous_month'))->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+        $bill_date = \Carbon\Carbon::parse($request->bill_date)->format('Y-m-d'); // Full date (e.g., '2024-09-30')
+        $bill_due_date = \Carbon\Carbon::parse($request->bill_date)->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
 
         $bill = Bill::create([
             'consumer_id' => $consumer_id,
@@ -385,5 +392,13 @@ class BillingController extends Controller
 
 
         return redirect()->route('billings.index')->with('success', 'Bill Has Been Generated');
+    }
+
+    public function destroy($id)
+    {
+        $consumer = Bill::findOrFail($id);
+        $consumer->delete();
+
+        return redirect()->route('billings.index')->with('success', 'Bill deleted successfully.');
     }
 }

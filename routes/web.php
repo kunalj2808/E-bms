@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/create', [BillingController::class, 'create'])->name('billings.create'); // Show create form
         Route::post('/store', [BillingController::class, 'store'])->name('billings.store'); // Show create form
         Route::get('/view/{id}/{consumer_id}', [BillingController::class, 'view'])->name('billings.view'); // Show create form
+        Route::delete('/{id}', [BillingController::class, 'destroy'])->name('billings.destroy'); // destroy a consumer
         
     });
 });

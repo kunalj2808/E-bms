@@ -76,7 +76,6 @@ class SettingController extends Controller
         ]);
 
         // Debug: check if update was successful
-    // dd($updated);
 
 
    
@@ -99,11 +98,26 @@ class SettingController extends Controller
         'electicity_above_value' => 'required|numeric|min:0',
         'late_percentage' => 'required|numeric|min:0',
         'maintain_cost' => 'required|numeric|min:0',
+        'payment_qr' => 'nullable|image|mimes:jpg,jpeg,png,bmp|max:2048',
     ]);
 
        // Find the user by ID
        $user = GeneralSetting::findOrFail(1);
+      // Handle company banner upload
+      if ($request->hasFile('payment_qr')) {
+        // Delete the old banner if it exists
+        if ($user->qr_image) {
+            $oldBannerPath = public_path('images/admin/' . $user->qr_image);
+            if (file_exists($oldBannerPath)) {
+                unlink($oldBannerPath);
+            }
+        }
 
+        // Store the new banner
+        $qrName = time() . '_qr.' . $request->payment_qr->extension();
+        $request->payment_qr->move(public_path('images/admin'), $qrName);
+        $user->qr_image = $qrName; // Update the user's company_banner attribute
+    }
       
      // Update genral settings attributes
      $updated = $user->update([
