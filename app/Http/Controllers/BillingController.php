@@ -266,7 +266,6 @@ class BillingController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         $consumer_id = $request->user_id;
         $bill_date = $request->bill_date;
         $total_reading = $request->current_reading;
