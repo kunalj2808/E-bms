@@ -31,6 +31,7 @@ class CreateBillsTable extends Migration
             $table->decimal('previous_reading', 8, 2)->nullable(false);
             $table->decimal('current_bill_amount', 10, 2)->nullable(false);
             $table->decimal('previous_due_amount', 10, 2)->nullable(false);
+            $table->decimal('tariff_dg', 10, 2)->nullable(false);
             
             // Timestamps
             $table->timestamps();

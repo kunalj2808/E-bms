@@ -19,6 +19,7 @@ return new class extends Migration
                 $table->string('consumer_name');           // Consumer name, not null
                 $table->text('mailing_address')->nullable(); // Mailing address, optional
                 $table->text('supply_at')->nullable();     // Supply location, optional
+                $table->text('area')->nullable();     // area, optional
                 $table->timestamp('created_at')->useCurrent();  // Date stamp (created_at)
                 $table->timestamp('updated_at')->useCurrent()->nullable();  // Date stamp (updated_at)
             });

@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/create', [ConsumerController::class, 'create'])->name('consumers.create'); // Show create form
         Route::post('/', [ConsumerController::class, 'store'])->name('consumers.store'); // Store a new consumer
         Route::get('/edit/{id}', [ConsumerController::class, 'edit'])->name('consumers.edit'); // Edit a consumer
-        Route::put('/{id}', [ConsumerController::class, 'update'])->name('consumers.update'); // Update a consumer
+        Route::post('/{id}', [ConsumerController::class, 'update'])->name('consumers.update'); // Update a consumer
         Route::delete('/{id}', [ConsumerController::class, 'destroy'])->name('consumers.destroy'); // destroy a consumer
     });
 
@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [BillingController::class, 'index'])->name('billings.index'); 
         Route::get('/create', [BillingController::class, 'create'])->name('billings.create'); // Show create form
         Route::post('/store', [BillingController::class, 'store'])->name('billings.store'); // Show create form
+        Route::get('/view/{id}/{consumer_id}', [BillingController::class, 'view'])->name('billings.view'); // Show create form
         
     });
 });

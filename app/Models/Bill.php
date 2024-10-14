@@ -21,6 +21,7 @@ class Bill extends Model
         'previous_reading',
         'current_bill_amount',
         'previous_due_amount',
+        'tariff_dg',
     ];
 
     // A bill belongs to a consumer
@@ -44,6 +45,6 @@ class Bill extends Model
      // Accessor to retrieve bill_date as YYYY-MM
      public function getBillDateAttribute($value)
      {
-         return \Carbon\Carbon::parse($value)->format('Y-m');
+         return \Carbon\Carbon::parse($value)->format('Y-m-d');
      }
 }

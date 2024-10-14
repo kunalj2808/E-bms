@@ -9,7 +9,6 @@
                         <span class="preview-title-lg overline-title">Edit Consumer Form Preview</span>
                         <form action="{{ route('consumers.update', $consumer->id) }}" method="POST">
                             @csrf
-                            @method('PUT') <!-- This ensures the form sends a PUT request -->
                             <div class="row gy-4">
                                 <div class="col-sm-6">
                                     <div class="form-group">
@@ -29,7 +28,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label class="form-label" for="default-05">Flat Number </label> <span class="text-danger">*</span>
                                         <div class="form-control-wrap">
@@ -38,7 +37,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label class="form-label" for="default-03">Meter Number</label> <span class="text-danger">*</span>
                                         <div class="form-control-wrap">
@@ -47,12 +46,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label class="form-label" for="default-04">Supply At</label>
                                         <div class="form-control-wrap">
                                             <input type="text" class="form-control" name="supply_at"
                                                 value="{{ $consumer->supply_at }}" placeholder="XYX 440V">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="default-04">Area</label><span class="text-danger">*</span>
+                                        <div class="form-control-wrap">
+                                            <input type="number"  class="form-control" name="area"
+                                                value="{{ $consumer->area }}" placeholder="120" required step="any">
                                         </div>
                                     </div>
                                 </div>
@@ -82,7 +90,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="bill_id" value="{{ $bill->current_bill_amount }}">
+                                <input type="hidden" name="bill_id" value="{{ $bill->id }}">
                                 <div class="d-flex justify-content-end mb-4">
                                     <button type="submit" class="btn btn-md btn-primary">Submit</button>
                                 </div>

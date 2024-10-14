@@ -16,6 +16,7 @@ class Consumer extends Model
         'meter_number',
         'mailing_address',
         'supply_at',
+        'area',
     ];
 
     // A consumer has many bills

@@ -13,6 +13,7 @@
     <!-- Page Title  -->
     <title>E-BMS Dashboard </title>
     <!-- StyleSheets  -->
+    <link rel="stylesheet" href="{{ asset('assets/css/libs/fontawesome-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/dashlite.css?ver=3.2.3') }}">
     <link id="skin-default" rel="stylesheet" href="{{ asset('assets/css/theme.css?ver=3.2.3')}}">
     <style>

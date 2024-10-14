@@ -41,6 +41,7 @@ class ConsumerController extends Controller
             'mailing_address' => 'nullable|string',
             'supply_at' => 'nullable|string',
             'previous_reading' => 'required|numeric',
+            'area' => 'required|numeric',
             'previous_amount' => 'required|numeric',
             'previous_month' => 'required|date', // Ensure it's a valid date
         ]);
@@ -52,14 +53,14 @@ class ConsumerController extends Controller
             'meter_number' => $request->input('meter_number'),
             'mailing_address' => $request->input('mailing_address'),
             'supply_at' => $request->input('supply_at'),
+            'area' => $request->input('area'),
         ]);
-    
         // Format reporting month as YEAR-MONTH
-        $reporting_month = \Carbon\Carbon::parse($request->bill_date)->format('Y-m');
+        $reporting_month = \Carbon\Carbon::parse($request->input('previous_month'))->format('Y-m');
     
         // Prepare bill dates
         $bill_date = \Carbon\Carbon::parse($request->input('previous_month'))->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-        $bill_due_date = \Carbon\Carbon::parse($request->input('previous_month'))->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+        $bill_due_date = \Carbon\Carbon::parse($request->input('previous_month'))->addDays(10)->format('Y-m-d'); // Example: Due date set 15 days after bill date
         // dd($bill_date);
         // Store the bill data
         if ($request->input('previous_amount') > 0) {
@@ -73,6 +74,7 @@ class ConsumerController extends Controller
                 'previous_reading' => 0,
                 'current_bill_amount' => $request->input('previous_amount'),
                 'previous_due_amount' => 0,
+                'tariff_dg' => 0,
             ]);
         } else {
             $bill = Bill::create([
@@ -85,6 +87,7 @@ class ConsumerController extends Controller
                 'previous_reading' => 0,
                 'current_bill_amount' => 0,
                 'previous_due_amount' => 0,
+                'tariff_dg' => 0,
             ]);
     
             // Store the payment data
