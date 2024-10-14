@@ -73,7 +73,7 @@ class BillingController extends Controller
 
         $result = $this->calculateBillAmount($present_reading, $general_tariff_range);
         $total_reading_amount = $result['total_amount'];
-        $energy_chg_charger = $tariff_dg ? $present_reading * $general_setting->tariff_dg : 0;
+        $energy_chg_charger = $tariff_dg ? $tariff_dg  * $general_setting->tariff_dg : 0;
         $fixed_charge = $present_reading / 15 * 27;
         if ($present_reading > $general_setting->electricity_upto) {
             $electricity_duty = $general_setting->electricity_upto * $general_setting->electicity_value * 9 / 100

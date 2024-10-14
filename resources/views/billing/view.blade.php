@@ -208,7 +208,7 @@
     <div class="items items1" style="grid-column: 1/3;">DUE DATE LATE PAYMENT SURCHARGE</div>
     <div class="items items1">0</div>
     <div class="items items1"></div>
-    <div class="items items1">TAL ENERGY BILL AMOUNT AFTER DUE DATE</div>
+    <div class="items items1">TOTAL ENERGY BILL AMOUNT AFTER DUE DATE</div>
     <div class="items items1">{{$calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty}}</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
