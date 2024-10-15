@@ -110,7 +110,7 @@ class BillingController extends Controller
         ];
         // $lateFees = \Carbon\Carbon::parse($bill_due_date)->isPast() ? 100 : 0;
        
-
+        $total_energy_bill = $total_reading_amount+ $energy_chg_charger+$fixed_charge+$electricity_duty+$fixed_maintain_charge;
             
         // Initialize late fees
         $lateFees = 0;
@@ -125,7 +125,7 @@ class BillingController extends Controller
             $lateFees = 0;
         }
 
-        $total_energy_bill = $total_reading_amount+ $energy_chg_charger+$fixed_charge+$electricity_duty+$fixed_maintain_charge+$lateFees;
+        $total_energy_bill = $total_energy_bill +$lateFees;
 
 
         $calculation = (object) [
