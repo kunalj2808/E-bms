@@ -23,6 +23,7 @@ class Bill extends Model
         'previous_due_amount',
         'tariff_dg',
         'is_previous',
+        'discount_deposite_amount',
     ];
 
     // A bill belongs to a consumer

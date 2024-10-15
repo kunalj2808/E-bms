@@ -12,7 +12,7 @@
 
                 <div class="nk-block-head-content">
                     <div class="toggle-wrap nk-block-tools-toggle">
-                        <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
+                        <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-bs-target="pageMenu"><em
                                 class="icon ni ni-menu-alt-r"></em></a>
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#generateBillingModal">
@@ -70,19 +70,29 @@
                                         <td>{{ \Carbon\Carbon::createFromFormat('Y-m', $bill->reporting_month)->format('Y - F') }}
                                         </td>
                                         <td><b>{{ $bill->current_reading }}</b></td>
-                                        <td><b>₹ {{ $bill->current_bill_amount }}</b></td>
                                         <td>
-                                            <a target="_blank"
-                                                href="{{ route('billings.view', ['id' => $bill->id, 'consumer_id' => $bill->consumer_id]) }}">Print
-                                                bill</a>
+                                            <b>₹ {{ 
+                                                max(0, $bill->current_bill_amount - ($bill->payment->received_amount ?? 0)) 
+                                            }}</b>
                                         </td>
-                                        <td>
+                                                                                <td>
                                             {{-- <a onclick="confirmDelete({{ $bill->id }})" class="btn btn-dim btn-sm btn-primary">View</a> --}}
                                             <form action="{{ route('billings.destroy', $bill->id) }}" method="POST" style="display:inline;" id="delete-form-{{ $bill->id }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <a class="btn btn-dim btn-sm btn-danger"  onclick="confirmDelete({{ $bill->id }})" >Remove</a>
                                             </form>
+                                            <a class="btn btn-dim btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#payBillModal"
+                                            data-total_amount="{{ max(0, $bill->current_bill_amount - ($bill->payment->received_amount ?? 0))}}" 
+                                            data-consumer_name="{{ucwords($bill->consumer->consumer_name )}}" 
+                                            data-id="{{ $bill->id }}" 
+                                            data-meter_number="{{ $bill->consumer->meter_number }}" 
+                                            data-flat_number="{{ $bill->consumer->flat_number }}">Pay Bill</a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-dim btn-sm btn-primary" target="_blank"
+                                                href="{{ route('billings.view', ['id' => $bill->id, 'consumer_id' => $bill->consumer_id]) }}">Print
+                                                bill</a>
                                         </td>
 
                                     </tr>
@@ -141,6 +151,13 @@
                             <input type="number" step="any" value="0" class="form-control" name="tariff_dg" id="tariff_dg"
                                 placeholder="Enter Tariff DG" required>
                         </div>
+                         <!-- Tariff Input (Optional) -->
+                         <div class="mb-3">
+                            <label for="discount_deposite_amount" class="form-label">Deposite Amount</label><span
+                            class="text-danger">*</span>
+                            <input type="number" step="any" value="0" class="form-control" name="discount_deposite_amount" id="discount_deposite_amount"
+                                placeholder="Enter Deposite Amount" required>
+                        </div>
 
                         <!-- Remark Input (Optional) -->
                         <div class="mb-3">
@@ -160,6 +177,41 @@
         </div>
     </div>
 
+    <!-- pay model -->
+    <!-- Modal Structure -->
+<div class="modal fade" id="payBillModal" tabindex="-1" role="dialog" aria-labelledby="payBillModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="payBillModalLabel">Pay Bill for <span id="modalConsumerName"></span><br> Meter No: <span id="modalMeterNumber"></span> - Flat No: <span id="modalFlatNumber"></span></h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{{ route('billings.pay') }}" method="POST">
+            @csrf
+        <div class="modal-body">
+            <input type="hidden" id="bill_id" name="bill_id" value="">
+            <!-- Non-editable Total Amount -->
+            <div class="form-group">
+              <label for="totalAmount">Total Amount</label>
+              <input type="text" class="form-control" id="totalAmount" value="" readonly>
+            </div>
+            <!-- Editable Amount to Pay -->
+            <div class="form-group">
+              <label for="amountToPay">Amount to Pay</label>
+              <input type="number" class="form-control" id="amountToPay" step="any" name="pay_amount" placeholder="Enter amount to pay">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Proceed to Pay</button>
+        </div>
+    </form>
+    </div>
+    </div>
+  </div>
+
     <script type="text/javascript">
     function confirmDelete(billId) {
         Swal.fire({
@@ -176,6 +228,29 @@
             }
         });
     }
+
+       // Get the modal element
+    var payBillModal = document.getElementById('payBillModal');
+
+// Event listener when the modal is triggered to open
+payBillModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget; // Button that triggered the modal
+
+    // Extract info from data-* attributes
+    var totalAmount = button.getAttribute('data-total_amount');
+    var consumerName = button.getAttribute('data-consumer_name');
+    var meterNumber = button.getAttribute('data-meter_number');
+    var flatNumber = button.getAttribute('data-flat_number');
+    var Id = button.getAttribute('data-id');
+
+    // Update modal header and input fields with extracted values
+    document.getElementById('modalConsumerName').textContent = consumerName;
+    document.getElementById('modalMeterNumber').textContent = meterNumber;
+    document.getElementById('modalFlatNumber').textContent = flatNumber;
+    document.getElementById('totalAmount').value = totalAmount; // Non-editable total amount
+    document.getElementById('bill_id').value = Id; // Non-editable total amount
+});
+
 </script>
 
 

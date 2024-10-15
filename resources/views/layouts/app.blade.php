@@ -231,6 +231,7 @@
     <script src="{{ asset('assets/js/charts/gd-default.js?ver=3.2.3') }}"></script>
     <script src="{{ asset('assets/js/libs/datatable-btns.js?ver=3.2.3') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 
 </body>
 

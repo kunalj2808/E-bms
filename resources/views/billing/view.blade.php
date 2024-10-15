@@ -217,34 +217,38 @@
     <div class="items items1">{{round($calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty+$calculation->lateFees)}}</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
+    <div class="items items1">Previous Due Amount (+)</div>
+    <div class="items items1"></div>
+    <div class="items items1">{{$calculation->{"previous_amount "} }}</div>
+    <div class="items items1"></div>
+    <div class="items items1"></div>
+    <div class="items items1">&nbsp;</div>
+
     <div class="items items1">DEPOSITE AMOUNT (-)</div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">{{$bill->discount_deposite_amount}}</div>
+    
+
+
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
-    <div class="items items1">0</div>
-    <div class="items items1"></div>
-    <div class="items items1"></div>
-    <div class="items items1">0</div>
-    <div class="items items1"></div>
-    <div class="items items1"></div>
-    <div class="items items1">0</div>
+    <div class="items items1">&nbsp;</div>
     <div class="items items1">FIXED MAINTENANCE COST</div>
     <div class="items items1"></div>
     <div class="items items1">{{$calculation->fixed_maintain_charge}}</div>
@@ -256,7 +260,7 @@
     <div class="items items1">0</div>
     <div class="items items1">TOTAL</div>
     <div class="items items1"></div>
-    <div class="items items1">{{round($calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty+$calculation->fixed_maintain_charge+$calculation->lateFees)}}</div>
+    <div class="items items1">{{round($calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty+$calculation->fixed_maintain_charge+$calculation->lateFees) +$calculation->{"previous_amount "}  - $bill->discount_deposite_amount }}</div>
 
 
    

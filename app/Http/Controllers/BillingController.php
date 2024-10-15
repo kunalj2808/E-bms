@@ -35,6 +35,7 @@ class BillingController extends Controller
         $total_reading = $bill->current_reading;
         $remarks = $bill->remarks;
         $tariff_dg = $bill->tariff_dg;
+        $discount_deposite_amount = $bill->discount_deposite_amount;
 
         $consumer_details = Consumer::findOrFail($consumer_id);
         // Assume $bill_date is the date you want to 4
@@ -59,6 +60,7 @@ class BillingController extends Controller
                 'previous_due_amount' => 0,
                 'tariff_dg' => 0,
                'is_previous' => 1,
+               'discount_deposite_amount' => 0,
             ];
         }
 
@@ -138,7 +140,9 @@ class BillingController extends Controller
             'lateFees' => $lateFees,
             'total_energy_bill' => $total_energy_bill,
             'constant_late_fees' => $constant_late_fees,
+            'previous_amount ' => $previous_amount ,
         ];
+        // dd($calculation );
 
         $rr = $present_reading;
 
@@ -287,6 +291,7 @@ class BillingController extends Controller
             'current_reading' => 'required|numeric',
             'remarks' => 'nullable|string',
             'tariff_dg' => 'required|numeric',
+            'discount_deposite_amount' => 'required|numeric',
         ]);
 
         $consumer_id = $request->user_id;
@@ -294,6 +299,7 @@ class BillingController extends Controller
         $total_reading = $request->current_reading;
         $remarks = $request->remarks;
         $tariff_dg = $request->tariff_dg;
+        $discount_deposite_amount = $request->discount_deposite_amount;
 
         // print_r($bill_date);
         $dateObj = new \DateTime($bill_date);
@@ -338,6 +344,7 @@ class BillingController extends Controller
                 'previous_due_amount' => 0,
                 'tariff_dg' => 0,
                 'is_previous' => 1,
+                'discount_deposite_amount' => 0,
             ];
         }
 
@@ -351,7 +358,6 @@ class BillingController extends Controller
 
         $present_reading = $total_reading - $previous_bill->current_reading;
 
-
         $general_tariff_range = (object) [
             'upto_50' => $general_setting->upto_50,
             'upto_50_150' => $general_setting->upto_50_150,
@@ -362,7 +368,7 @@ class BillingController extends Controller
         $result = $this->calculateBillAmount($present_reading, $general_tariff_range);
 
         $total_reading_amount = $result['total_amount'];
-        $energy_chg_charger = $tariff_dg ? $present_reading * $general_setting->tariff_dg : 0;
+        $energy_chg_charger = $tariff_dg ? $tariff_dg * $general_setting->tariff_dg : 0;
         $fixed_charge = $present_reading / 15 * 27;
         if ($present_reading > $general_setting->electricity_upto) {
             $electricity_duty = $general_setting->electricity_upto * $general_setting->electicity_value * 9 / 100
@@ -387,7 +393,7 @@ class BillingController extends Controller
 
         $fixed_maintain_charge = $consumer_details->area * $general_setting->maintain_cost;
 
-        $grand_total = $total_reading_amount + $energy_chg_charger + $fixed_charge + $electricity_duty + $previous_amount + $fixed_maintain_charge;
+        $grand_total = ($total_reading_amount + $energy_chg_charger + $fixed_charge + $electricity_duty + $fixed_maintain_charge)-$discount_deposite_amount +$previous_amount;
 
 
         $reporting_month = \Carbon\Carbon::parse($request->bill_date)->format('Y-m');
@@ -406,11 +412,48 @@ class BillingController extends Controller
             'current_bill_amount' => $grand_total,
             'previous_due_amount' => $previous_amount,
             'tariff_dg' => $tariff_dg,
+            'discount_deposite_amount' => $discount_deposite_amount,
         ]);
 
 
         return redirect()->route('billings.index')->with('success', 'Bill Has Been Generated');
     }
+
+    public function pay(Request $request){
+        // dd($request->all());
+         // Validate incoming request (optional but recommended)
+    $validated = $request->validate([
+        'bill_id' => 'required|exists:bills,id',
+        'pay_amount' => 'required|numeric',
+    ]);
+
+        $bill = Bill::findOrFail($request->bill_id);
+
+        if ($request->pay_amount > $bill->current_bill_amount) {
+            return redirect()->route('billings.index')->with('error', 'Deposit Amount Can Not Be Greater Than Remaining');
+        }  
+      
+
+            // Find the payment record or create a new one if it doesn't exist
+        $payment = Payment::firstOrNew(['bill_id' => $request->bill_id]);
+
+        // If the payment exists, add to the received_amount, otherwise set it
+        $payment->received_amount = ($payment->received_amount ?? 0) + $request->pay_amount;
+
+        // Add late fees (replace or add default 0 if not present)
+        $payment->late_fees = ($payment->late_fees ?? 0) + ($request->late_fees ?? 0);
+
+        // Save the payment
+        $payment->save();
+
+        // $bill = Bill::findOrFail($request->bill_id);
+        // $bill->update([
+        //     'current_bill_amount' => $bill->current_bill_amount - $request->pay_amount,
+        // ]);
+
+        return redirect()->route('billings.index')->with('success', 'Payment Added Successfully.');
+    }
+
 
     public function destroy($id)
     {
