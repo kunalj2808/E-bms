@@ -97,7 +97,7 @@
 
 
 <div class="container1">
-    <div class="items items9" style="grid-row: 1/5;grid-column:1/3;"><h3 style="text-align: center;">Sirol Road,Gwalior</h3></div>
+    <div class="items items9" style="grid-row: 1/5;grid-column:1/3;"><h3 style="text-align: center;">{{Auth::user()->company_address ?? ''}}</h3></div>
     <div class="items items1" style="grid-row:1/5;">TARIFF GRID</div>
     <div class="items items1">UPTO 50</div>
     <div class="items items1">{{$general_tariff_range->upto_50}}</div>
@@ -108,7 +108,7 @@
     <div class="items items1">ABOVE 300</div>
     <div class="items items1">{{$general_tariff_range->above_300}}</div>
     <div class="items items1">FLAT NO.</div>
-    <div class="items items1">C-203</div>
+    <div class="items items1">{{$consumer_details->flat_number}}</div>
     <div class="items items1" style="grid-column:3/4">TARIFF DG</div>
     <div class="items items1" style="grid-column:4/6;">RS. {{$general_setting['tariff_dg']}}/UNIT</div>
     <div class="items items1">METER NO.</div>
