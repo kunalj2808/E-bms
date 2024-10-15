@@ -100,7 +100,7 @@ class BillingController extends Controller
         $reporting_month = \Carbon\Carbon::parse($bill_date)->format('Y-m');
         // Prepare bill dates
         $bill_date = \Carbon\Carbon::parse($bill_date)->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-        $bill_due_date = \Carbon\Carbon::parse($bill_date)->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+        $bill_due_date = \Carbon\Carbon::parse($bill_date)->addDays(10)->format('Y-m-d'); // Example: Due date set 15 days after bill date
         $general_tariff_range = (object) [
             'upto_50' => $general_setting->upto_50,
             'upto_50_150' => $general_setting->upto_50_150,
@@ -375,7 +375,7 @@ class BillingController extends Controller
         $reporting_month = \Carbon\Carbon::parse($request->bill_date)->format('Y-m');
         // Prepare bill dates
         $bill_date = \Carbon\Carbon::parse($request->bill_date)->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-        $bill_due_date = \Carbon\Carbon::parse($request->bill_date)->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+        $bill_due_date = \Carbon\Carbon::parse($request->bill_date)->addDays(10)->format('Y-m-d'); // Example: Due date set 15 days after bill date
 
         $bill = Bill::create([
             'consumer_id' => $consumer_id,

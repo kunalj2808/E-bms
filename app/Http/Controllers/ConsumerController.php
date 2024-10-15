@@ -126,7 +126,7 @@ class ConsumerController extends Controller
 
          // Prepare bill dates
          $bill_date = \Carbon\Carbon::parse($request->input('previous_month'))->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-         $bill_due_date = \Carbon\Carbon::parse($request->input('previous_month'))->addDays(15)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+         $bill_due_date = \Carbon\Carbon::parse($request->input('previous_month'))->addDays(10)->format('Y-m-d'); // Example: Due date set 15 days after bill date
         $bill = Bill::where('consumer_id', $id)
         ->orderBy('created_at', 'asc')  // Order by created_at in ascending order
         ->first();  // Get the first record (oldest)
