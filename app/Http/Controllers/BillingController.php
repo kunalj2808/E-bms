@@ -110,7 +110,8 @@ class BillingController extends Controller
         ];
         // $lateFees = \Carbon\Carbon::parse($bill_due_date)->isPast() ? 100 : 0;
        
-        $total_energy_bill = $total_reading_amount+ $energy_chg_charger+$fixed_charge+$electricity_duty+$fixed_maintain_charge;
+        $total_energy_bill = $total_reading_amount+ $energy_chg_charger+$fixed_charge+$electricity_duty;
+        // dd($total_energy_bill);
             
         // Initialize late fees
         $lateFees = 0;
@@ -119,13 +120,13 @@ class BillingController extends Controller
         // Check if the due date is before the current date
         if (\Carbon\Carbon::parse($bill_due_date)->lt(\Carbon\Carbon::parse($current_date))) {
             // If due date has passed, calculate late fees
-            $lateFees = (($total_energy_bill-$fixed_maintain_charge) * $general_setting->late_percentage) / 100;
+            $lateFees = (($total_energy_bill) * $general_setting->late_percentage) / 100;
         } else {
             // If due date is not passed, late fees remain 0
             $lateFees = 0;
         }
+        $constant_late_fees =(($total_energy_bill) * $general_setting->late_percentage) / 100;
 
-        $total_energy_bill = $total_energy_bill +$lateFees;
 
 
         $calculation = (object) [
@@ -136,6 +137,7 @@ class BillingController extends Controller
             'fixed_charge' => $fixed_charge,
             'lateFees' => $lateFees,
             'total_energy_bill' => $total_energy_bill,
+            'constant_late_fees' => $constant_late_fees,
         ];
 
         $rr = $present_reading;
