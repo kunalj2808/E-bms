@@ -112,7 +112,7 @@
     <div class="items items1" style="grid-column:3/4">TARIFF DG</div>
     <div class="items items1" style="grid-column:4/6;">RS. {{$general_setting['tariff_dg']}}/UNIT</div>
     <div class="items items1">METER NO.</div>
-    <div class="items items1"></div>
+    <div class="items items1">{{$consumer_details->meter_number}}</div>
     <div class="items items1" style="font-size:13px;grid-column:3/4">SERVICE TAX ON GRID CONSUMPTION</div>
     <div class="items items1"style="grid-column:4/6;">{{$general_setting['service_tax_dg']}}%</div>
     <div class="items items1">NAME</div>
@@ -127,7 +127,7 @@
 
 <div class="container7">
     <div class="items items1">REMARKS</div>
-    <div class="items items1">{{$consumer_details->remarks}}</div>
+    <div class="items items1">{{$bill->remarks}}</div>
     <div class="items items1" >PRESCRIBED LOAD (KW) FIXED AMOUNT</div>
     <div class="items items1">5.00</div>
     <div class="items items1"></div>
