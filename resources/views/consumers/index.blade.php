@@ -39,9 +39,9 @@
                                 
                             </tr>
                         </thead>
-                        @foreach ($consumers as $user)
-                            
+                        
                         <tbody>
+                            @foreach ($consumers as $user)
                             <tr>
                                 <td>{{$user->consumer_name}}</td>
                                 <td>{{$user->flat_number}}</td>
@@ -67,8 +67,8 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endforeach
                         </tbody>
-                        @endforeach
                     </table>
                 </div>
             </div><!-- .card-preview -->
