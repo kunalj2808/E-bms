@@ -35,7 +35,7 @@
                                 <th>Address</th>
                                 <th>Supply_at</th>
                                 <th>Created on</th>
-                                <th>Action</th>
+                                <th class="noExport">Action</th>
                                 
                             </tr>
                         </thead>

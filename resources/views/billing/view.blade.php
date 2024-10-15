@@ -90,7 +90,7 @@
     <div class="items items1">{{round($calculation->total_energy_bill)}}</div>
     <div class="items items1" style="font-size:13px;grid-column:3/4">TOTAL AMOUNT PAYABLE AFTER DUE DATE</div>
     <div class="items items1">{{$bill->bill_due_date}}</div>
-    <div class="items items1">{{round($calculation->total_energy_bill + $calculation->lateFees)}}</div>  
+    <div class="items items1">{{round($calculation->total_energy_bill + ($calculation->total_energy_bill* $general_setting['late_percentage']/100))}}</div>  
     
 </div>
 
@@ -211,10 +211,10 @@
     <div class="items items1">TOTAL ENERGY BILL AMOUNT</div>
     <div class="items items1">{{$calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty}}</div>
     <div class="items items1" style="grid-column: 1/3;">DUE DATE LATE PAYMENT SURCHARGE</div>
-    <div class="items items1">0</div>
+    <div class="items items1">{{$calculation->lateFees}}</div>
     <div class="items items1"></div>
     <div class="items items1">TOTAL ENERGY BILL AMOUNT AFTER DUE DATE</div>
-    <div class="items items1">{{$calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty}}</div>
+    <div class="items items1">{{$calculation->total_reading_amount+$calculation->energy_chg_charger+$calculation->fixed_charge+$calculation->electricity_duty+$calculation->lateFees}}</div>
     <div class="items items1"></div>
     <div class="items items1"></div>
     <div class="items items1">0</div>

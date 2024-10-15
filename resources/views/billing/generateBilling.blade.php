@@ -53,11 +53,12 @@
                             <thead>
                                 <tr>
                                     <th>Consumer Name</th>
+                                    <th>Flat Number</th>
                                     <th>Reporting Month</th>
                                     <th>Current Reading</th>
                                     <th>Total Amount</th>
-                                    <th>Action</th>
-                                    <th>Print</th>
+                                    <th class="noExport">Action</th>
+                                    <th class="noExport">Print</th>
 
                                 </tr>
                             </thead>
@@ -65,6 +66,7 @@
                                     @foreach ($bills as $bill)
                                     <tr>
                                         <td>{{ ucwords($bill->consumer->consumer_name) }}</td>
+                                        <td>{{ ucwords($bill->consumer->flat_number) }}</td>
                                         <td>{{ \Carbon\Carbon::createFromFormat('Y-m', $bill->reporting_month)->format('Y - F') }}
                                         </td>
                                         <td><b>{{ $bill->current_reading }}</b></td>

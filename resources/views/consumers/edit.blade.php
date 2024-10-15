@@ -69,7 +69,7 @@
                                         <label class="form-label" for="default-04">Previous Reading</label>
                                         <div class="form-control-wrap">
                                             <input type="text" class="form-control" name="previous_reading"
-                                            value="{{ $bill->current_reading }}" placeholder="100">
+                                            value="{{ $bill->current_reading ?? 0 }}" placeholder="100">
                                         </div>
                                     </div>
                                 </div>
@@ -78,19 +78,19 @@
                                         <label class="form-label" for="default-04">Previous Amount</label>
                                         <div class="form-control-wrap">
                                             <input type="text" class="form-control" name="previous_amount"
-                                            value="{{ $bill->current_bill_amount }}" placeholder="00">
+                                            value="{{ $bill->current_bill_amount ?? 0}}" placeholder="00">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label" for="">Previous Month</label>
+                                        <label class="form-label" for="previous_date">Previous Month</label>
                                         <div class="form-control-wrap">
-                                            <input type="date" class="form-control" id="supply_at" name="previous_month"  value="{{ $bill->current_bill_amount }}">
+                                            <input type="date" id="previous_date" class="form-control" name="previous_month" value="{{ $bill->bill_date ?? '' }}">
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="bill_id" value="{{ $bill->id }}">
+                                <input type="hidden" name="bill_id" value="{{ $bill->id ?? 0 }}">
                                 <div class="d-flex justify-content-end mb-4">
                                     <button type="submit" class="btn btn-md btn-primary">Submit</button>
                                 </div>
@@ -107,8 +107,8 @@
                 // Get the last day of the previous month
                 const lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
                 
-                // Set the minimum date (earliest date allowed) - for example, from January 1, 2000
-                const earliestDate = new Date(2000, 0, 1); // You can adjust the year as needed
+                // Set the minimum date (earliest date allowed) - adjust the year as needed
+                const earliestDate = new Date(2000, 0, 1);
                 
                 // Format the date to YYYY-MM-DD
                 const formatDate = (date) => {
@@ -117,13 +117,29 @@
                     let year = date.getFullYear();
                     return `${year}-${month}-${day}`;
                 };
-            
-                // Set the min and max attributes for the input field
-                const supplyAtInput = document.getElementById('supply_at');
-                supplyAtInput.min = formatDate(earliestDate); // Earliest date allowed
-                supplyAtInput.max = formatDate(lastDayPrevMonth); // Last day of the previous month
                 
-                // Set the default value to the last day of the previous month
-                supplyAtInput.value = formatDate(lastDayPrevMonth);
+                // Get the input field
+                const previousDateInput = document.getElementById('previous_date');
+                
+                // If there's a predefined value (from PHP), use that date; otherwise, use last day of previous month
+                const preDefinedDate = previousDateInput.value ? new Date(previousDateInput.value) : lastDayPrevMonth;
+            
+                // If $bill->bill_date exists, restrict the input to that month
+                if (previousDateInput.value) {
+                    const billDate = new Date(previousDateInput.value);
+                    const firstDayBillMonth = new Date(billDate.getFullYear(), billDate.getMonth(), 1);
+                    const lastDayBillMonth = new Date(billDate.getFullYear(), billDate.getMonth() + 1, 0);
+                    
+                    // Set the min and max to the first and last days of that month
+                    previousDateInput.min = formatDate(firstDayBillMonth);
+                    previousDateInput.max = formatDate(lastDayBillMonth);
+                } else {
+                    // No pre-set bill date, allow selection up to the last day of the previous month
+                    previousDateInput.min = formatDate(earliestDate);
+                    previousDateInput.max = formatDate(lastDayPrevMonth);
+                    
+                    // Set the default value to the last day of the previous month
+                    previousDateInput.value = formatDate(lastDayPrevMonth);
+                }
             </script>
         @endsection

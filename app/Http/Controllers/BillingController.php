@@ -14,7 +14,7 @@ class BillingController extends Controller
     public function index()
     {
         $users = Consumer::all();  // Fetch all users
-        $bills = Bill::with('payment', 'consumer')
+        $bills = Bill::with('payment', 'consumer')->where('is_previous',1)
             ->orderBy('created_at', 'asc')  // Order by creation date (oldest first)
             ->get();
         return view('billing.generateBilling', compact('users', 'bills'));
@@ -58,6 +58,7 @@ class BillingController extends Controller
                 'current_bill_amount' => 0,
                 'previous_due_amount' => 0,
                 'tariff_dg' => 0,
+               'is_previous' => 1,
             ];
         }
 
@@ -100,7 +101,7 @@ class BillingController extends Controller
         $reporting_month = \Carbon\Carbon::parse($bill_date)->format('Y-m');
         // Prepare bill dates
         $bill_date = \Carbon\Carbon::parse($bill_date)->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-        $bill_due_date = \Carbon\Carbon::parse($bill_date)->addDays(10)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+        $bill_due_date = \Carbon\Carbon::parse($bill_date)->addDays(10)->format('Y-m-d');// Example: Due date set 15 days after bill date
         $general_tariff_range = (object) [
             'upto_50' => $general_setting->upto_50,
             'upto_50_150' => $general_setting->upto_50_150,
@@ -108,9 +109,23 @@ class BillingController extends Controller
             'above_300' => $general_setting->above_300
         ];
         // $lateFees = \Carbon\Carbon::parse($bill_due_date)->isPast() ? 100 : 0;
-        $total_energy_bill = $total_reading_amount+ $energy_chg_charger+$fixed_charge+$electricity_duty+$fixed_maintain_charge;
-        $lateFees = ($total_energy_bill * $general_setting->late_percentage) / 100;
-        
+       
+
+            
+        // Initialize late fees
+        $lateFees = 0;
+        $current_date = \Carbon\Carbon::now()->format('Y-m-d');
+
+        // Check if the due date is before the current date
+        if (\Carbon\Carbon::parse($bill_due_date)->lt(\Carbon\Carbon::parse($current_date))) {
+            // If due date has passed, calculate late fees
+            $lateFees = ($total_energy_bill * $general_setting->late_percentage) / 100;
+        } else {
+            // If due date is not passed, late fees remain 0
+            $lateFees = 0;
+        }
+
+        $total_energy_bill = $total_reading_amount+ $energy_chg_charger+$fixed_charge+$electricity_duty+$fixed_maintain_charge+$lateFees;
 
 
         $calculation = (object) [
@@ -281,7 +296,7 @@ class BillingController extends Controller
         // print_r($bill_date);
         $dateObj = new \DateTime($bill_date);
         // Get the current month and year
-    // Get the month and year
+         // Get the month and year
         $month = $dateObj->format('m'); // 'm' gives month as a two-digit number
         $year = $dateObj->format('Y');  // 'Y' gives the full year
 
@@ -320,6 +335,7 @@ class BillingController extends Controller
                 'current_bill_amount' => 0,
                 'previous_due_amount' => 0,
                 'tariff_dg' => 0,
+                'is_previous' => 1,
             ];
         }
 
