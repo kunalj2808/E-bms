@@ -61,8 +61,8 @@
 
                                 </tr>
                             </thead>
-                            @foreach ($bills as $bill)
-                                <tbody>
+                            <tbody>
+                                    @foreach ($bills as $bill)
                                     <tr>
                                         <td>{{ ucwords($bill->consumer->consumer_name) }}</td>
                                         <td>{{ \Carbon\Carbon::createFromFormat('Y-m', $bill->reporting_month)->format('Y - F') }}
@@ -84,8 +84,8 @@
                                         </td>
 
                                     </tr>
+                                    @endforeach
                                 </tbody>
-                            @endforeach
                         </table>
                     </div>
                 </div><!-- .card-preview -->
