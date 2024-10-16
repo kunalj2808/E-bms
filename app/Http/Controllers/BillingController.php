@@ -379,7 +379,7 @@ class BillingController extends Controller
 
         if ($previous_bill) {
             // Check if the related payment exists
-            if (property_exists($previous_bill, 'payment') && $previous_bill->payment) {
+            if (is_object($previous_bill) && isset($previous_bill->payment)) {
                 // If payment exists, calculate the previous amount
                 $previous_amount = $previous_bill->current_bill_amount - $previous_bill->payment->received_amount;
             } else {
@@ -393,13 +393,13 @@ class BillingController extends Controller
 
         $fixed_maintain_charge = $consumer_details->area * $general_setting->maintain_cost;
 
-        $grand_total = ($total_reading_amount + $energy_chg_charger + $fixed_charge + $electricity_duty + $fixed_maintain_charge)-$discount_deposite_amount +$previous_amount;
+        $grand_total = ($total_reading_amount + $energy_chg_charger + $fixed_charge + $electricity_duty + $fixed_maintain_charge)- $discount_deposite_amount +$previous_amount;
 
 
         $reporting_month = \Carbon\Carbon::parse($request->bill_date)->format('Y-m');
         // Prepare bill dates
         $bill_date = \Carbon\Carbon::parse($request->bill_date)->format('Y-m-d'); // Full date (e.g., '2024-09-30')
-        $bill_due_date = \Carbon\Carbon::parse($request->bill_date)->addDays(10)->format('Y-m-d'); // Example: Due date set 15 days after bill date
+        $bill_due_date = \Carbon\Carbon::parse($request->bill_date)->addDays(10)->format('Y-m-d'); // Example: Due date set 10 days after bill date
 
         $bill = Bill::create([
             'consumer_id' => $consumer_id,
