@@ -66,7 +66,7 @@
                             data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a>
                     </div>
                     <div class="nk-sidebar-brand">
-                        <a href="html/index.html" class="logo-link nk-sidebar-logo">
+                        <a href="{{route('home')}}" class="logo-link nk-sidebar-logo">
                             <img class="logo-light logo-img" src="{{ asset('images/logo-white.png') }}"
                                 srcset="{{ asset('images/logo-white.png') }} 2x" alt="logo">
                             <img class="logo-dark logo-img" src="{{ asset('images/logo-white.png') }}"
@@ -124,7 +124,7 @@
                                         class="icon ni ni-menu"></em></a>
                             </div>
                             <div class="nk-header-brand d-xl-none">
-                                <a href="html/index.html" class="logo-link">
+                                <a href="{{route('home')}}" class="logo-link">
                                     <img class="logo-light logo-img" src="./images/logo.png"
                                         srcset="{{ asset('images/logo-white.png') }} 2x" alt="logo">
                                     <img class="logo-dark logo-img" src="./images/logo-bms.png"

@@ -293,7 +293,7 @@ class BillingController extends Controller
             'tariff_dg' => 'required|numeric',
             'discount_deposite_amount' => 'required|numeric',
         ]);
-
+       
         $consumer_id = $request->user_id;
         $bill_date = $request->bill_date;
         $total_reading = $request->current_reading;
