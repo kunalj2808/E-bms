@@ -32,7 +32,7 @@
                             <div class="nk-block nk-block-middle nk-auth-body">
                                 <div class="brand-logo pb-5">
                                     <a href="{{route('home')}}" class="logo-link">
-                                        <img class="logo-dark logo-img logo-img-lg" src="./images/logo-bms.png" srcset="./images/logo-dark2x.png 2x" alt="logo-dark">
+                                        <img class="logo-dark logo-img logo-img-lg" src="{{ asset('images/logo-bms.png') }}" srcset="{{ asset('images/logo-bms.png') }} 2x" alt="logo-dark">
                                     </a>
                                 </div>
                                 <div class="nk-block-head">
@@ -47,7 +47,7 @@
                                     @csrf
                                                 <div class="form-group">
                                         <div class="form-label-group">
-                                            <label class="form-label" for="email-address">Email </label>
+                                            <label class="form-label" for="email">Email </label>
                                         </div>
                                         <div class="form-control-wrap">
                                             <input id="email" autocomplete="email" type="email" class="form-control  @error('email') is-invalid @enderror form-control-lg" name="email" value="{{ old('email') }}" required autofocus required placeholder="Enter your email address or username">
@@ -83,10 +83,6 @@
                                         <button class="btn btn-lg btn-primary btn-block">Sign in</button>
                                     </div>
                                 </form><!-- form -->
-                               
-                                
-                              
-                                
                             </div><!-- .nk-block -->
                            
                         </div><!-- .nk-split-content -->
@@ -96,7 +92,8 @@
                                     <div class="">
                                         <div class="nk-feature nk-feature-center">
                                             <div class="nk-feature-img">
-                                                <img class="round" src="./images/slides/back-slide.jpeg" srcset="./images/slides/promo-a2x.png 2x" alt="">
+                                                
+                                                <img class="round" src="{{ asset('images/slides/back-slide.jpeg') }}" srcset="{{ asset('images/slides/back-slide.jpeg') }} 2x" alt="">
                                             </div>
                                             <div class="nk-feature-content py-4 p-sm-5">
                                                 <h4>E-BMS</h4>
