@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Consumer;
+use App\Models\BillSetting;
+use App\Models\GeneralSetting;
 use App\Models\Bill;
 use App\Models\Payment;
 use Illuminate\Http\Request;
@@ -32,7 +34,6 @@ class ConsumerController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         // Validate the incoming data
         $request->validate([
             'consumer_name' => 'required|string|max:255',
@@ -76,7 +77,22 @@ class ConsumerController extends Controller
                 'tariff_dg' => 0,
                 'is_previous' => 0,
             ]);
-
+            $general_setting = GeneralSetting::first();
+            $bill_setting = BillSetting::create([
+                'upto_50' => $general_setting->upto_50,
+                'upto_50_150' => $general_setting->upto_50_150,
+                'upto_150_300' => $general_setting->upto_150_300,
+                'above_300' => $general_setting->above_300,
+                'tariff_dg' => $general_setting->tariff_dg,
+                'service_tax_dg' => $general_setting->service_tax_dg,
+                'electricity_upto' => $general_setting->electricity_upto,
+                'electicity_value' => $general_setting->electicity_value,
+                'electicity_above_value' => $general_setting->electicity_above_value,
+                'late_percentage' => $general_setting->late_percentage,
+                'maintain_cost' => $general_setting->maintain_cost,
+                'qr_image' => $general_setting->qr_image,
+                'bill_id' => $bill->id,
+            ]);
         }
        
     

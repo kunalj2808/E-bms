@@ -95,7 +95,7 @@
                                             class="text-danger">*</span>
                                         <div class="form-control-wrap">
                                             <input type="number" class="form-control" name="electricity_upto"
-                                                value="{{ old('electricity_upto', $general->electricity_upto ?? '') }}" placeholder="100" step="any" required>
+                                                value="{{ old('electricity_upto', intval($general->electricity_upto) ?? '') }}" placeholder="100" step="any" required>
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label" for="default-05">ABOVE <span class="above_duty"></span>
+                                        <label class="form-label" for="default-05">ABOVE <span class="above_duty">{{intval($general->electricity_upto) ?? ''}}</span>
                                             AMOUNT</label>
                                         <span class="text-danger">*</span>
                                         <div class="form-control-wrap">

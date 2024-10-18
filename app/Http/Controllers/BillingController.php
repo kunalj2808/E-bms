@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Consumer;
 use App\Models\Bill;
+use App\Models\BillSetting;
 use App\Models\Payment;
 use App\Models\GeneralSetting;
 
@@ -63,8 +64,8 @@ class BillingController extends Controller
                'discount_deposite_amount' => 0,
             ];
         }
-
-        $general_setting = GeneralSetting::first();
+        $bill_settings = BillSetting::where('bill_id',$bill->id)->first();
+        $general_setting =  $bill_settings ?? GeneralSetting::first();
         $present_reading = $total_reading - $previous_bill->current_reading;
         $general_tariff_range = (object) [
             'upto_50' => $general_setting->upto_50,
@@ -351,9 +352,8 @@ class BillingController extends Controller
 
         $general_setting = GeneralSetting::first();
 
-        // print_r($general_setting);
         if ($total_reading < $previous_bill->current_reading) {
-            return redirect()->route('billings.index')->with('error', 'Previous reading should not be greater than current reading.');
+            return redirect()->route('billings.index')->with('error', 'Previous reading should not be same or greater than current reading.');
         }
 
         $present_reading = $total_reading - $previous_bill->current_reading;
@@ -415,17 +415,32 @@ class BillingController extends Controller
             'discount_deposite_amount' => $discount_deposite_amount,
         ]);
 
+        $bill_setting = BillSetting::create([
+            'upto_50' => $general_setting->upto_50,
+            'upto_50_150' => $general_setting->upto_50_150,
+            'upto_150_300' => $general_setting->upto_150_300,
+            'above_300' => $general_setting->above_300,
+            'tariff_dg' => $general_setting->tariff_dg,
+            'service_tax_dg' => $general_setting->service_tax_dg,
+            'electricity_upto' => $general_setting->electricity_upto,
+            'electicity_value' => $general_setting->electicity_value,
+            'electicity_above_value' => $general_setting->electicity_above_value,
+            'late_percentage' => $general_setting->late_percentage,
+            'maintain_cost' => $general_setting->maintain_cost,
+            'qr_image' => $general_setting->qr_image,
+            'bill_id' => $bill->id,
+        ]);
+
 
         return redirect()->route('billings.index')->with('success', 'Bill Has Been Generated');
     }
 
     public function pay(Request $request){
-        // dd($request->all());
          // Validate incoming request (optional but recommended)
-    $validated = $request->validate([
-        'bill_id' => 'required|exists:bills,id',
-        'pay_amount' => 'required|numeric',
-    ]);
+        $validated = $request->validate([
+            'bill_id' => 'required|exists:bills,id',
+            'pay_amount' => 'required|numeric',
+        ]);
 
         $bill = Bill::findOrFail($request->bill_id);
 
